@@ -1,50 +1,43 @@
 import os
+import time
+import numpy as np
 
+import hips
 from hips.constants import ProblemSense
 from hips.loader import load_mps
 from hips.models import MIPModel
 from hips.solver import GurobiSolver
 from hips.heuristics import FeasibilityPump
-import time
+
 
 print("Start experiment")
 
 feasible = []
 times = []
-for i in range(5):
-    mip_model = MIPModel(GurobiSolver())
-    # Advanced
-    load_mps(mip_model, path=os.getcwd() + "/mps_files/10teams.mps")
-    # print("Loaded model")
+test_number = 5
+for i in range(test_number):
+    mip_model = hips.load_problem_gurobi("10teams")
+
     mip_model.set_mip_sense(ProblemSense.MIN)
     start = time.time()
 
-    fs = FeasibilityPump(mip_model, t=10)
+    fs = FeasibilityPump(mip_model, t=20)
     fs.compute(1000)
 
     end = time.time()
-    # print(fs.cycle_its)
-    # print([fs.cycle_its[i] - fs.cycle_its[i-1] for i in range(len(fs.cycle_its))])
-    # print(fs.long_cycle_its)
-    # print([fs.long_cycle_its[i] - fs.long_cycle_its[i-1] for i in range(len(fs.long_cycle_its))])
 
-    # sol = {var: fs.variable_solution(var) for var in mip_model.lp_model.vars}
-    # print(mip_model.is_feasible(sol))
-    # print(f"time: {time.time() - start}")
-    # fs.tracker.plot("feasibility objective")
     sol = {var: fs.variable_solution(var) for var in mip_model.lp_model.vars}
     feasible.append(mip_model.is_feasible(sol))
 
     times.append(end-start)
     print("Model {} solved.".format(i))
 
-print(feasible)
-print("Feasible solutions found: {}".format(sum(feasible)))
+print("#--------------------#")
+print("Feasible solutions found in {} tests: {}".format(test_number, sum(feasible)))
 
 print(times)
 print("Average time consumed: {}s".format(sum(times)/len(times)))
 
-import numpy as np
 feasible = np.array(feasible)
 times = np.array(times)
 feasible_times = times[feasible]
