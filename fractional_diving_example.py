@@ -1,7 +1,7 @@
 from hips import *
 from hips.heuristics._fractional_diving import FractionalDiving
 from hips.models import *
-from hips.solver import GurobiSolver
+from hips.solver import GurobiSolver, ClpSolver
 
 def build_model(mip_model):
     x = mip_model.add_variable("x", VarTypes.INTEGER, lb=0, ub=float("inf"), dim=2)
