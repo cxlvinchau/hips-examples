@@ -1,5 +1,5 @@
 from hips import *
-from hips.heuristics import FractionalDiving
+from hips.heuristics import LineSearchDiving
 from hips.models import *
 from hips.solver import GurobiSolver, ClpSolver
 
@@ -15,7 +15,7 @@ def build_model(mip_model):
 # Test with Gurobi
 mip_model = MIPModel(GurobiSolver())
 build_model(mip_model)
-heur = FractionalDiving(mip_model)
+heur = LineSearchDiving(mip_model)
 heur.compute()
 print("Status: {}".format(heur.get_status()))
 print("Found solution: {}".format(heur.get_objective_value()))
@@ -26,7 +26,7 @@ heur.tracker.plot("objective value")
 # Test with CLP
 mip_model = MIPModel(ClpSolver())
 build_model(mip_model)
-heur = FractionalDiving(mip_model)
+heur = LineSearchDiving(mip_model)
 heur.compute()
 print("Status: {}".format(heur.get_status()))
 print("Found solution: {}".format(heur.get_objective_value()))
