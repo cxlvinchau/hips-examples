@@ -16,7 +16,7 @@ def build_model(mip_model):
 
 # Test with Gurobi
 print("#----------Gurobi-----------#")
-# Test lower bound (LOWER) -> x = [0,0]
+# Test lower bound (LOWER) -> x* = [0,0]
 mip_model = MIPModel(GurobiSolver())
 build_model(mip_model)
 heur = HeuristicBounds(mip_model, BoundDirection.LOWER)

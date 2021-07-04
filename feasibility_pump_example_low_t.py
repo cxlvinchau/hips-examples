@@ -38,7 +38,6 @@ print("Feasible solutions found in {} tests: {}".format(test_number, sum(feasibl
 print(times)
 print("Average time consumed: {}s".format(sum(times)/len(times)))
 
-feasible = np.array(feasible)
 times = np.array(times)
-feasible_times = times[feasible]
+feasible_times = times[np.array(feasible)]
 print("Average time consumed for feasible solutions: {}s".format(sum(feasible_times)/len(feasible_times)))
