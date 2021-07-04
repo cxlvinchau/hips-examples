@@ -1,29 +1,12 @@
-import numpy as np
-from hips import ProblemSense
-from hips.heuristics import TwoStageFeasibilityPump, FeasibilityPump
-from hips.loader import load_mps
-from hips.models import MIPModel
-from hips.solver import GurobiSolver, ClpSolver
-import copy
+from hips import load_problem
+from hips.heuristics import TwoStageFeasibilityPump
 
-model = MIPModel(ClpSolver())
-load_mps(model, "examples/mps_files/10teams.mps")
-model.set_mip_sense(ProblemSense.MIN)
-model.summary()
+mip = load_problem("bppc8-02")
+fp = TwoStageFeasibilityPump(mip)
+fp.compute(max_iter=100)
 
-import sys
-sys.exit(0)
+# Print objective value
+print(fp.get_objective_value())
 
-variables = copy.deepcopy(model.variables)
-
-fp = FeasibilityPump(model, t=15, seed=0)
-
-fp.compute(max_iter=1000)
-
-sol = {var: fp.variable_solution(var) for var in model.variables}
-
-print(sol)
-print(model.is_feasible(sol))
-print([(var, np.min(sol[var].array), np.max(sol[var].array)) for var in sol])
-
-fp.tracker.plot("feasibility objective")
+# Print solution
+print({var: fp.variable_solution(var) for var in mip.get_variables()})
